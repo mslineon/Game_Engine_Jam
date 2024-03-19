@@ -42,17 +42,17 @@ class Example extends Phaser.Scene
 
         const boom = this.add.sprite(0, 0, 'boom').setBlendMode('ADD').setScale(4).setVisible(false);
        
-        this.audio = this.sound.add('sfx', {
-            volume: 0.75
+        this.bark = this.sound.add('sfx', {
+            volume: 1
         });
-        this.audio.play();
-        this.audio.pause();
-        this.audio.loop = true;
+        this.bark.loop = true;
+        this.bark.play();
+        // this.bark.pause();
+
 
         this.input.on('pointerdown', (pointer) =>
-        {
-            this.audio.resume();
-
+        {    
+            this.bark.resume();
             boom.copyPosition(pointer).play('explode');
 
             const distance = new Phaser.Math.Vector2();
@@ -71,6 +71,10 @@ class Example extends Phaser.Scene
             }
         });
     }
+
+update(){
+
+}
 }
 
 
