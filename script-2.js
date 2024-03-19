@@ -47,7 +47,7 @@ function update(time, delta) {
     // Existing code to calculate the feather's drifting
     this.feather.driftTime += this.feather.driftSpeed * delta;
     var driftX = Math.sin(this.feather.driftTime) * this.feather.driftAmplitude;
-    var driftY = (Math.sin(this.feather.driftTime * 2.0) * -1.0) * this.feather.upDriftAmplitude;
+    var driftY = (Math.sin(this.feather.driftTime * 1.0)) * this.feather.upDriftAmplitude;
     
     // Get the mouse position
     var mouseX = this.input.mousePointer.x;
@@ -81,7 +81,7 @@ function update(time, delta) {
     this.feather.initialY += Math.sin(angle) * repulsionForce * repulsionAmount;
     // Apply the adjusted or regular drift X position to the feather
     this.feather.setX(this.feather.initialX + driftX);  //- Math.cos(angle) * repulsionForce * repulsionAmount);
-    this.feather.setY(this.feather.initialY + driftY*0.2);
+    this.feather.setY(this.feather.initialY + driftY);
     //this.feather.initialY = this.feather.y;
 
 

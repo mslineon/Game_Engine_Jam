@@ -1,13 +1,18 @@
 class Example extends Phaser.Scene
+
 {
+
     preload ()
     {
         this.load.image('block', 'assets/feather.png');
         this.load.spritesheet('boom', 'assets/wind.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
+        this.load.audio('sfx', 'assets/sounds/bark.wav');
     }
 
     create ()
     {
+        this.sound.pauseOnBlur = false;
+
         this.anims.create({
             key: 'explode',
             frames: 'boom',
@@ -26,7 +31,7 @@ class Example extends Phaser.Scene
             useDamping: true
         });
 
-        for (let i = 0; i < 10; i++)
+        for (let i = 0; i < 20; i++)
         {
             const block = blocks.create(Phaser.Math.Between(100, 700), Phaser.Math.Between(100, 500));
 
@@ -36,9 +41,18 @@ class Example extends Phaser.Scene
         }
 
         const boom = this.add.sprite(0, 0, 'boom').setBlendMode('ADD').setScale(4).setVisible(false);
+       
+        this.audio = this.sound.add('sfx', {
+            volume: 0.75
+        });
+        this.audio.play();
+        this.audio.pause();
+        this.audio.loop = true;
 
         this.input.on('pointerdown', (pointer) =>
         {
+            this.audio.resume();
+
             boom.copyPosition(pointer).play('explode');
 
             const distance = new Phaser.Math.Vector2();
@@ -51,11 +65,14 @@ class Example extends Phaser.Scene
                 force.copy(distance).setLength(5000000 / distance.lengthSq()).limit(1000);
                 acceleration.copy(force).scale(1 / block.body.mass);
                 block.body.velocity.add(acceleration);
-                // how do i rotate the feathers?
+                
+                var rotationSpeed = force.x * 0.5; 
+                block.setAngularVelocity(rotationSpeed);
             }
         });
     }
 }
+
 
 const config = {
     type: Phaser.AUTO,
@@ -68,7 +85,10 @@ const config = {
             debug: false
         }
     },
-    scene: Example
+    scene: Example,
+    audio: {
+        noAudio: true
+    }
 };
 
 const game = new Phaser.Game(config);
