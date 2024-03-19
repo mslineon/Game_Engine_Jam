@@ -6,7 +6,7 @@ class Example extends Phaser.Scene
     {
         this.load.image('block', 'assets/feather.png');
         this.load.spritesheet('boom', 'assets/wind.png', { frameWidth: 64, frameHeight: 64, endFrame: 23 });
-        this.load.audio('sfx', 'assets/sounds/bark.wav');
+        this.load.audio('sfx', 'assets/sounds/woulg2024_05-piano.wav');
     }
 
     create ()
@@ -47,12 +47,12 @@ class Example extends Phaser.Scene
         });
         this.bark.loop = true;
         this.bark.play();
-        // this.bark.pause();
+        this.bark.pause();
 
 
         this.input.on('pointerdown', (pointer) =>
         {    
-            this.bark.resume();
+            this.bark.play();
             boom.copyPosition(pointer).play('explode');
 
             const distance = new Phaser.Math.Vector2();
@@ -90,9 +90,9 @@ const config = {
         }
     },
     scene: Example,
-    audio: {
-        noAudio: true
-    }
+    // audio: {
+    //     noAudio: false
+    // }
 };
 
 const game = new Phaser.Game(config);
