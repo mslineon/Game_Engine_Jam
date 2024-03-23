@@ -1,5 +1,6 @@
 class Main extends Phaser.Scene {
-    text;
+
+    text; // my text object
 
     constructor() {
         super();// get the details from Phaser
@@ -15,18 +16,21 @@ class Main extends Phaser.Scene {
 
     create ()
     {
+        // placing the text and all
         this.text = this.add.text(50, 520, '').setFontFamily('helvetica').setFontSize(20).setColor('#FF0000');
 
+        // the famous sound to always play 
         this.sound.pauseOnBlur = false;
 
+        // callback for the feather to loop
         var timer = this.time.addEvent({
-            delay: 100,                // ms
+            delay: 100,               
             callback: this.addFeather,
-            //args: [],
             callbackScope: this,
             loop: true
         });
 
+        //animation of the blowing
         this.anims.create({
             key: 'explode',
             frames: 'boom',
@@ -35,6 +39,7 @@ class Main extends Phaser.Scene {
             hideOnComplete: true
         });
 
+        //physics to the feathers 
         this.blocks = this.physics.add.group({
             defaultKey: 'block',
             bounceX: 1,
@@ -45,18 +50,20 @@ class Main extends Phaser.Scene {
             useDamping: true
         });
 
+        // function to create the feathers
         for (let i = 0; i < 10; i++)
         {
             const block = this.blocks.create(Phaser.Math.Between(100, 700), Phaser.Math.Between(100, 500));
             block.setGravityY(80); // Gravity to go down
 
             block.setMass(Phaser.Math.Between(1, 2));
-            // block.setScale(0.5 * Math.random()+ 0.1);
             block.setScale(0.3 * block.body.mass ** 0.5);
         }
 
+        // set up blowing
         const boom = this.add.sprite(0, 0, 'boom').setBlendMode('ADD').setScale(4).setVisible(false);
        
+        // set up music
         this.music = this.sound.add('sfx', {
             volume: 1
         });
@@ -64,15 +71,21 @@ class Main extends Phaser.Scene {
         this.music.play();
         this.music.pause();
 
+        // this is what happens when we click! 
         this.input.on('pointerdown', (pointer) =>
         {    
+            // music play
             this.music.play();
+            
+            // blowing image appear
             boom.copyPosition(pointer).play('explode');
 
+            // set up distance, force, acceleration (reference from phaser 3 examples)
             const distance = new Phaser.Math.Vector2();
             const force = new Phaser.Math.Vector2();
             const acceleration = new Phaser.Math.Vector2();
 
+            // get the above - referencs from Phaser 3 for some movement to the feather 
             for (const block of this.blocks.getChildren())
             {
                 distance.copy(block.body.center).subtract(pointer);
@@ -86,7 +99,7 @@ class Main extends Phaser.Scene {
         });
     }
 
-
+    // function to add a million feather *wink wink*
     addFeather() {
         const block = this.blocks.create(Phaser.Math.Between(100, 700), 0);
         block.setGravityY(80); // Gravity to go down
@@ -96,15 +109,16 @@ class Main extends Phaser.Scene {
         block.setScale(0.3 * block.body.mass ** 0.5);
         
     }
-
-update(){
-    this.text.setText(`CPU usage: ${
-        (61 - this.physics.world.fps) * (100/60)  + Math.random()
-    }%`);
+    // THE TWIST to the game here! 
+    // Display the FPS usage of the game to showcase that by having so many feather it will crash your computer, hihi
+    update(){
+        this.text.setText(`CPU usage: ${
+            (61 - this.physics.world.fps) * (100/60)  + Math.random()
+        }%`);
+    }
 }
-}
 
-
+// some housekeeping
 const config = {
     type: Phaser.AUTO,
     width: 800,
@@ -118,5 +132,6 @@ const config = {
     },
     scene: Main,
 };
-
+    
+// more housekeeping? 
 const game = new Phaser.Game(config);
